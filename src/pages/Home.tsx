@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PlaylistSelector } from '../components/PlaylistSelector';
 import { GamePlayer } from '../components/GamePlayer';
 import { Header } from '../components/Header';
-import { ChallengeMode } from '../components/ChallengeMode';
+import { ChallengeMode } from '../components/challenge/ChallengeMode';
 import { SpotifyPlaylist, SpotifyTrack } from '../types/spotify';
 import { getUserPlaylists, getPlaylistTracks, getTrackById } from '../services/spotifyApi';
 import { GameResult } from '../types/game';
@@ -80,23 +80,34 @@ export const Home: React.FC<HomeProps> = ({ challengeData }) => {
 
   const handleGameComplete = (score: number) => {
     if (currentTrack) {
-      const gameResult: GameResult = {
-        trackId: currentTrack.id,
-        trackName: currentTrack.name,
-        artistName: currentTrack.artists[0].name,
-        albumImage: currentTrack.album.images[0]?.url || '',
-        score,
-        time: Number(document.querySelector('.text-4xl.font-bold.mb-2')?.textContent?.replace('s', '') || 0),
-        timestamp: Date.now()
-      };
+      let gameResult: GameResult;
+      
+      if (challengeData) {
+        // Use challenge data for the current track
+        const currentChallengeTrack = challengeData[playedTracks.size];
+        gameResult = {
+          trackId: currentTrack.id,
+          trackName: currentChallengeTrack.trackName,
+          artistName: currentChallengeTrack.artistName,
+          albumImage: currentChallengeTrack.albumImage,
+          score,
+          time: Number(document.querySelector('.text-4xl.font-bold.mb-2')?.textContent?.replace('s', '') || 0),
+          timestamp: Date.now()
+        };
+      } else {
+        // Normal game mode
+        gameResult = {
+          trackId: currentTrack.id,
+          trackName: currentTrack.name,
+          artistName: currentTrack.artists[0].name,
+          albumImage: currentTrack.album.images[0]?.url || '',
+          score,
+          time: Number(document.querySelector('.text-4xl.font-bold.mb-2')?.textContent?.replace('s', '') || 0),
+          timestamp: Date.now()
+        };
+      }
 
       if (challengeData) {
-        const currentChallengeTrack = challengeData[playedTracks.size];
-        if (currentChallengeTrack) {
-          gameResult.trackName = currentChallengeTrack.trackName;
-          gameResult.artistName = currentChallengeTrack.artistName;
-          gameResult.albumImage = currentChallengeTrack.albumImage;
-        }
         setPlayerResults(prev => [...prev, gameResult]);
       }
       
