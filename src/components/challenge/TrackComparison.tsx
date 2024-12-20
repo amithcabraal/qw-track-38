@@ -12,7 +12,7 @@ export const TrackComparison: React.FC<TrackComparisonProps> = ({ original, play
       <img
         src={original.albumImage}
         alt={original.trackName}
-        className="w-16 h-16 rounded-lg object-cover"
+        className="w-16 h-16 rounded-lg object-cover shadow-md"
       />
     </div>
     <div className="flex-1 min-w-0">
@@ -24,11 +24,15 @@ export const TrackComparison: React.FC<TrackComparisonProps> = ({ original, play
       </p>
     </div>
     <div className="text-right flex-shrink-0">
-      <div className="font-bold text-lg dark:text-white">
-        {original.score} vs {player?.score || 0}
+      <div className="font-bold text-lg dark:text-white space-x-1">
+        <span className="text-green-500">{original.score}</span>
+        <span className="text-gray-400">vs</span>
+        <span className="text-blue-500">{player?.score || 0}</span>
       </div>
-      <div className="text-sm text-gray-500">
-        {original.time.toFixed(1)}s vs {player?.time.toFixed(1) || '0.0'}s
+      <div className="text-sm text-gray-500 space-x-1">
+        <span>{original.time.toFixed(1)}s</span>
+        <span>vs</span>
+        <span>{player?.time.toFixed(1) || '0.0'}s</span>
       </div>
     </div>
   </div>
