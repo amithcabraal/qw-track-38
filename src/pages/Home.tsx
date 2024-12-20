@@ -8,7 +8,7 @@ import { getUserPlaylists, getPlaylistTracks, getTrackById } from '../services/s
 import { GameResult } from '../types/game';
 
 interface HomeProps {
-  challengeData?: any;
+  challengeData?: GameResult[];
 }
 
 export const Home: React.FC<HomeProps> = ({ challengeData }) => {
@@ -90,10 +90,17 @@ export const Home: React.FC<HomeProps> = ({ challengeData }) => {
         timestamp: Date.now()
       };
 
-      setPlayedTracks(prev => new Set([...prev, currentTrack.id]));
       if (challengeData) {
+        const currentChallengeTrack = challengeData[playedTracks.size];
+        if (currentChallengeTrack) {
+          gameResult.trackName = currentChallengeTrack.trackName;
+          gameResult.artistName = currentChallengeTrack.artistName;
+          gameResult.albumImage = currentChallengeTrack.albumImage;
+        }
         setPlayerResults(prev => [...prev, gameResult]);
       }
+      
+      setPlayedTracks(prev => new Set([...prev, currentTrack.id]));
     }
   };
 
